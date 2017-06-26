@@ -1,0 +1,98 @@
+- alias: "herätys aurinkoisella säällä"
+#  initial_state: True
+  trigger:
+    platform: time
+    at: '16:50:00'
+  condition:
+    condition: and
+    conditions:
+      - condition: time
+        weekday:
+          - wed
+      - condition: numeric_state
+        entity_id: 'sensor.yr_precipitation'
+        above: 1
+  action:
+    - service: light.turn_on
+      data:
+        entity_id: light.keittion_valo
+        brightness: 255
+        transition: 60
+      
+- alias: "yövalo päälle"
+  trigger: 
+    platform: state
+    entity_id: sensor.olohuoneen_liiketunnistin
+    to: 'True'
+  condition:
+    condition: time
+    after: '12:00:00'
+    before: '15:30:00'
+  action:
+    service: light.turn_on
+    data:
+      entity_id: light.makuuhuoneen_valo
+      brightness: 50
+    
+- alias: "yövalo pois päältä 5 min päästä"
+  trigger:
+    platform: state
+    entity_id: sensor.olohuoneen_liiketunnistin
+    to: "False"
+    for:
+      minutes: 5
+  action:
+    service: light.turn_off
+    data:
+      entity_id: light.makuuhuoneen_valo
+
+- alias: "tuuletin päälle"
+  trigger:
+    platform: time
+    at: '14:55:00'
+  condition:
+    condition: numeric_state
+    entity_id: 'sensor.olohuoneen_lampotila'
+    above: 25
+  action:
+    service: switch.turn_on
+    data:
+      entity_id: switch.wemo_insight
+
+- alias: "hibernaatio"
+  trigger:
+    platform: state
+    entity_id: group.all_devices
+#    from: 'home'
+    to: 'not_home'
+    for: 
+      minutes: 5
+  action:
+    - service: switch.turn_off
+      data:
+        entity_id: switch.wemo_insight
+    - service: light.turn_off
+      data:
+        entity_id: group.all_lights
+
+#  action:
+#    service: tts.google_say
+#    entity_id: media_player.kitchen_home
+#    data_template:
+#       message: "Welcome home {{states('trigger.entity_id.name')}}."
+      
+
+
+
+          
+#- alias: "lämpövaroitus"
+#  trigger:
+#    platform: numeric_state
+#    entity_id: 'sensor.olohuoneen_lampotila'
+#    above: 25
+#  action:
+#    service: tts.google_say
+#    entity_id: media_player.kitchen_home
+#    data_template:
+#     #message: "Temperature inside is {{states('sensor.olohuoneen_lampotila')}}."
+#      message: "The time is now {{ timestamp_local }}"

@@ -1,0 +1,31 @@
+default_view:
+  view: yes
+  icon: mdi:home
+  entities:
+    - device_tracker.katris_phone
+    - device_tracker.teemus_android
+    - light.keittion_valo
+    - light.makuuhuoneen_valo
+    - switch.wemo_insight
+    - sensor.olohuoneen_lampotila  
+    - sensor.yr_precipitation
+    - sensor.yr_temperature
+    - media_player.kitchen_home
+
+#kaikki_valot:
+#  view: yes
+#  name: Kaikki valot
+#  entities:
+#    - light.makuuhuoneen_valo
+#    - light.keittion_valo
+
+automaatiot:
+   view: yes
+   name: Automaatiot
+   entities:
+     - automation.heratys_aurinkoisella_saalla
+     - automation.kotiintulo
+     - automation.tuuletin_paalle
+     - automation.yovalo_paalle
+     - automation.yovalo_pois_paalta_5_min_paasta
+     - automation.hibernaatio
