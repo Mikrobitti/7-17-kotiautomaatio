@@ -1,9 +1,12 @@
 - alias: "herätys aurinkoisella säällä"
-#  initial_state: True
+  # Aseta herätyksen kellonaika haluamaksesi  
   trigger:
     platform: time
     at: '16:50:00'
+  # Ennen toiminnon suorittamista tarkistetaan, täyttyykö ehto eli onko lauantai tai sunnuntai
+  # ja sataako ulkona
   condition:
+    # And-merkinnällä molempien ehtojen pitää täyttyä	
     condition: and
     conditions:
       - condition: time
@@ -11,34 +14,43 @@
           - wed
       - condition: numeric_state
         entity_id: 'sensor.yr_precipitation'
+        # Sateen määrä millimetreinä
         above: 1
   action:
     - service: light.turn_on
+      # Data-kohdassa kerrotaan mikä valo sytytetään, kuinka kirkkaaksi ja 
+      # kuinka kauan kirkastuminen kestää sekunteina
       data:
         entity_id: light.keittion_valo
         brightness: 255
         transition: 60
       
 - alias: "yövalo päälle"
+  # Herätteenä liiketunnistin siirtyy tilaan 'true'
   trigger: 
     platform: state
     entity_id: sensor.olohuoneen_liiketunnistin
     to: 'True'
+  # Valo syttyy vain, jos kello 01:00-05:30
   condition:
     condition: time
-    after: '12:00:00'
-    before: '15:30:00'
+    after: '01:00:00'
+    before: '05:30:00'
   action:
     service: light.turn_on
     data:
+      # Määritellään sytytettävä valo
       entity_id: light.makuuhuoneen_valo
+      # Asetetaan kirkkaus tasolle 50 (maksimi 255)
       brightness: 50
-    
+
+# Erilline automaatio sammuttaa yövalon    
 - alias: "yövalo pois päältä 5 min päästä"
   trigger:
     platform: state
     entity_id: sensor.olohuoneen_liiketunnistin
     to: "False"
+    # For-asetus kertoo, että valo sammuu 5 minuuttia viimeisen liikkeen jälkeen
     for:
       minutes: 5
   action:
@@ -47,9 +59,11 @@
       entity_id: light.makuuhuoneen_valo
 
 - alias: "tuuletin päälle"
+  # Herätteenä toimii kellonaika
   trigger:
     platform: time
     at: '14:55:00'
+  # Käynnistymisen ehtona on lämpötila
   condition:
     condition: numeric_state
     entity_id: 'sensor.olohuoneen_lampotila'
@@ -57,17 +71,23 @@
   action:
     service: switch.turn_on
     data:
+      # Määritellään käytettävä pistorasia
       entity_id: switch.wemo_insight
+
+# Bonus-automaatio
+# Kodin laitteet sammuvat, jos Homeassistant tunnistaa, että asukkaat ovat poistuneet
+# Vaatii Devicetracker-asetuksia configuration.yaml-tiedostoon 
 
 - alias: "hibernaatio"
   trigger:
     platform: state
     entity_id: group.all_devices
-#    from: 'home'
     to: 'not_home'
+    # Määritellään 5 minuutin viive, jotta satunnaiset verkosta tippumiset eivät häiritse
     for: 
       minutes: 5
   action:
+    # Kun ehto täyttyy, sammutetaan valot ja pistorasiat
     - service: switch.turn_off
       data:
         entity_id: switch.wemo_insight
