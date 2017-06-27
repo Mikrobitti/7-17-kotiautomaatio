@@ -74,25 +74,3 @@
     - service: light.turn_off
       data:
         entity_id: group.all_lights
-
-#  action:
-#    service: tts.google_say
-#    entity_id: media_player.kitchen_home
-#    data_template:
-#       message: "Welcome home {{states('trigger.entity_id.name')}}."
-      
-
-
-
-          
-#- alias: "lämpövaroitus"
-#  trigger:
-#    platform: numeric_state
-#    entity_id: 'sensor.olohuoneen_lampotila'
-#    above: 25
-#  action:
-#    service: tts.google_say
-#    entity_id: media_player.kitchen_home
-#    data_template:
-#     #message: "Temperature inside is {{states('sensor.olohuoneen_lampotila')}}."
-#      message: "The time is now {{ timestamp_local }}"

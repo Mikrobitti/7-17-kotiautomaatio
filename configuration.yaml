@@ -30,6 +30,7 @@ config:
 
 http:
   # Uncomment this to add a password (recommended!)
+  # Lisää alle salasana kakoispisteen jälkeen
   api_password: !secret http_password
   # Uncomment this if you are using SSL or running in Docker etc
   # base_url: example.duckdns.org:8123
@@ -60,9 +61,13 @@ sun:
 tts:
   platform: google
 
+# Device tracker käyttää nmap-komentoa selvittääkseen verkkoon kytkeytyneet laitteet
+# Älypuhelimen ilmestymistä verkkoon eli paikallaoloa voidaan käyttää osana automaatiota
+
 device_tracker:
  platform: nmap_tracker
  hosts: 192.168.1.1/24
+ # Exclude-kohdassa listataan laitteet, joita ei tarvitse skannata kuten tietokoneet.
  exclude:
    - 192.168.1.109
    - 192.168.1.108
@@ -75,7 +80,9 @@ device_tracker:
    - 192.168.1.112
    - 192.168.1.106
    - 192.168.1.124
- 
+
+# Jos automaattinen järjestelmä ei tunnista Trådfri-valoja, syötä tähän oman siltasi tiedot
+
 tradfri:
   host: 192.168.1.108
   api_key: !secret tradfri_key
@@ -83,26 +90,31 @@ tradfri:
 
 #-- Anturit ---
 
+
 sensor:
+  # Norjalaisen Yr-sääpalvelun asetukset
   - platform: yr
     monitored_conditions:
       - temperature
       - windSpeed
       - cloudiness
       - precipitation
-
+  
+  # Philips Hue -liiketunnistimen valoisuusanturin asetukset
   - platform: rest
     resource: http://192.168.1.104/api/eqK7cI-0FhcU1ecd4D8uHqZnKPSDOfvZbqlWTbJc/sensors/4
     value_template: '{{ value_json.state.lightlevel }}'
     unit_of_measurement: Lux
     name: 'Olohuoneen valoisuus'
- 
+  
+  # Hue-liiketunnistimen lämpötila-anturin asetukset
   - platform: rest
     resource: http://192.168.1.104/api/eqK7cI-0FhcU1ecd4D8uHqZnKPSDOfvZbqlWTbJc/sensors/2
     value_template: '{{ value_json.state.temperature | float / 100 }}'
     unit_of_measurement: °C
     name: 'Olohuoneen lampotila'
 
+  # Liiketunnistimen asetukset
   - platform: rest
     resource: http://192.168.1.104/api/eqK7cI-0FhcU1ecd4D8uHqZnKPSDOfvZbqlWTbJc/sensors/3
     value_template: '{{ value_json.state.presence }}'
@@ -110,6 +122,8 @@ sensor:
     name: 'Olohuoneen liiketunnistin'
 
 
+# !include-komennoilla paljon tilaa vievät automaatiot voi pitää omassa tiedostossaan
+# Myös ryhmien tiedot voi jakaa omaan tiedostoonsa
 
 group: !include groups.yaml
 automation: !include automation.yaml
