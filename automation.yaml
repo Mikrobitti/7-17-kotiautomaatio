@@ -77,6 +77,7 @@
 # Bonus-automaatio
 # Kodin laitteet sammuvat, jos Homeassistant tunnistaa, että asukkaat ovat poistuneet
 # Vaatii Devicetracker-asetuksia configuration.yaml-tiedostoon 
+# Katso tarkemmat ohjeet asetuksista osoitteesta https://home-assistant.io/components/device_tracker/
 
 - alias: "hibernaatio"
   trigger:
