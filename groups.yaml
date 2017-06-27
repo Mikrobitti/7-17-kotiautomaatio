@@ -1,6 +1,9 @@
+#Ensimmäinen ryhmä on asetettu perusnäkymäksi asetuksella default_view.
 default_view:
   view: yes
+  # Icon-asetus ei ole pakollinen, tämä asetus käyttää oletusnäkymässä talo-ikonia home-tekstin sijaan
   icon: mdi:home
+  # Entities-kohdassa listataan, mitä perusnäkymä sisältää
   entities:
     - device_tracker.katris_phone
     - device_tracker.teemus_android
@@ -12,12 +15,7 @@ default_view:
     - sensor.yr_temperature
     - media_player.kitchen_home
 
-#kaikki_valot:
-#  view: yes
-#  name: Kaikki valot
-#  entities:
-#    - light.makuuhuoneen_valo
-#    - light.keittion_valo
+# Automaatiot ja niiden pois-päälle-nappulat listataan erillisellä sivulla 
 
 automaatiot:
    view: yes
